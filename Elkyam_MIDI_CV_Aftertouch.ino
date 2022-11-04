@@ -29,12 +29,12 @@
 #define CLOCK 4
 #define DAC1  8
 #define DAC2  9
-#define DAC3  12
+#define DAC3  5
 
-#define MIDI0  5
-#define MIDI1 6
-#define MIDI2  7
-#define MIDI3  10
+#define MIDI0  A1
+#define MIDI1  A3
+#define MIDI2  A6
+#define MIDI3  A7
 
 int MIDI_CHANNEL = 0;
 int SWITCH1 = 0;
@@ -59,11 +59,13 @@ void setup()
   pinMode(CLOCK, OUTPUT);
   pinMode(DAC1, OUTPUT);
   pinMode(DAC2, OUTPUT);
+  pinMode(DAC3, OUTPUT);
   digitalWrite(GATE, LOW);
   digitalWrite(TRIG, LOW);
   digitalWrite(CLOCK, LOW);
   digitalWrite(DAC1, HIGH);
   digitalWrite(DAC2, HIGH);
+  digitalWrite(DAC3, HIGH);
 
   SPI.begin();
   MIDI.begin(MIDI_CHANNEL);
@@ -185,11 +187,10 @@ void loop()
 
       case midi::AfterTouchChannel:
         d1 = MIDI.getData1();
-        d2 = MIDI.getData2(); // From 0 to 127
 
         // CC range from 0 to 4095 mV  Left shift d2 by 5 to scale from 0 to 4095,
         // and choose gain = 2X
-        setVoltage(DAC3, 1, 0, d2 << 5); // DAC2, channel 1, gain = 2X
+        setVoltage(DAC3, 1, 1, d1 << 5); // DAC2, channel 1, gain = 2X
         break;
         
       case midi::Clock:
